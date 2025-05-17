@@ -1,32 +1,30 @@
+// app.js
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const { connectDB } = require("./database/database");
 require("dotenv").config();
 
+const app = express();
 
-
-const app = express()
-
+connectDB();
 
 app.use(cookieParser());
 app.use(express.json());
 
-
-connectDB();
-
 app.use(cors({
-    origin: process.env.CLIENT_URL,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+  origin: process.env.CLIENT_URL,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
 }));
 
+// Routes
 const userRoute = require("./routes/userRoute");
 const projectRoute = require("./routes/projectRoutes");
-app.use("/api/v1/user", userRoute)
-app.use("/api/v1/project", projectRoute)
+const aiRoute = require("./routes/generateCodeROute");
 
-app.listen(process.env.PORT || 5000, () => {
-    console.log(`server started on port ${process.env.PORT || 5000}`);
-    
-})
+app.use("/api/v1/user", userRoute);
+app.use("/api/v1/project", projectRoute);
+app.use("/api/v1/ai", aiRoute);
+
+module.exports = app;
